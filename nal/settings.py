@@ -33,6 +33,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'pages.apps.PagesConfig',
+    'lessons.apps.LessonsConfig',
+    'students.apps.StudentsConfig',
+    'students.apps.TeachersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -77,8 +80,11 @@ WSGI_APPLICATION = 'nal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'naldb',
+        'USER': 'postgres',
+        'PASSWORD': 'jsxlot123',
+        'HOST': 'localhost'
     }
 }
 
