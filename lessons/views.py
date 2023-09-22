@@ -1,8 +1,20 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+from .models import Lesson
+
 def index(request):
-    return render(request, 'lessons/lessons.html')
+    lessons = Lesson.objects.all()
+    
+    context = {
+        'lessons': lessons
+    }
+    return render(request, 'lessons/lessons.html', context)
 
 def lesson(request, lesson_id):
-    return render(request, 'lessons/lesson.html', {'lesson_id':lesson_id})
+    lesson_by_id = Lesson.objects.get(pk= lesson_id)
+
+    context = {
+    'lesson': lesson_by_id
+    }
+    return render(request, 'lessons/lesson.html', context)

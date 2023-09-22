@@ -1,6 +1,89 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
+  <!-- OPTIONS -->
+  <section id="services" class="py-5 bg-secondary">
+    <div class="container">
+      <div class="row text-center justify-content-center">
+        <div class="col-md-3 d-flex align-items-stretch">
+          <a class="card expand-card text-decoration-none" style="width: 15rem;" href="#">
+            <i class="fas fa-solid fa-ruler fa-4x mt-4"></i>
+            <div class="card-body">
+              <h5 class="card-title">Word Ruler</h5>
+              <p class="card-text">Prepare your word ruler</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-3 d-flex align-items-stretch">
+          <a class="card expand-card text-decoration-none" style="width: 15rem;" href="#">
+            <i class="fas fa-solid fa-chart-line fa-4x mt-4"></i>
+            <div class="card-body">
+              <h5 class="card-title">Analytics</h5>
+              <p class="card-text">View student performance</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-3 d-flex align-items-stretch">
+          <a class="card expand-card text-decoration-none" style="width: 15rem;" href="#">
+            <i class="fas fa-solid fa-child fa-4x mt-4"></i>
+            <div class="card-body">
+              <h5 class="card-title">Students</h5>
+              <p class="card-text">Manage your students</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- END OF OPTIONS -->
+  
+  <!-- LESSONS -->
+  <section id="listings" class="py-5">
+    <div class="container">
+      <h3 class="text-center mb-3">Your Lessons</h3>
+      <div class="row">
+        {% if lessons %}
+
+            {% for lesson in lessons %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card listing-preview">
+                <img class="card-img-top" src="{{lesson.student.photo.url}}" alt="" style="width: 100%; height: 15vw; object-fit: cover;">
+                <div class="card-body">
+                    <div class="listing-heading text-center">
+                    <h3 class="text-primary">{{ lesson.student.name }}</h3>
+                    <h4 class="text-primary">{{ lesson.lesson_title }}</h4>
+                    <p>
+                        <i class="fas fa-map-marker text-secondary"></i> {{ lesson.student.address }}</p>
+                    </div>
+                    <hr>
+                    <div class="row py-2 text-secondary">
+                    <div class="col-8">
+                        <i class="fas fa-user"></i> {{lesson.student.name}}</div>
+                    </div>
+                    <div class="row text-secondary pb-2">
+                    <div class="col-8">
+                        <i class="fas fa-clock"></i> {{ lesson.lesson_date }}</div>
+                    </div>
+                    <hr>
+                    <a href="{% url 'lesson' lesson.id %}" class="btn btn-primary btn-block">View Lesson</a>
+                </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        {% else %}
+            <div class="col-md-12">
+                <p>No Lessons Available</p>
+            </div>
+
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  <!-- END OF LESSONS-->
+
   <!-- Showcase -->
   <section id="showcase">
     <div class="container text-center">
@@ -125,169 +208,6 @@
     </div>
   </section>
 
-  <!-- Listings -->
-  <section id="listings" class="py-5">
-    <div class="container">
-      <h3 class="text-center mb-3">Latest Listings</h3>
-      <div class="row">
-        <!-- Listing 1 -->
-        <div class="col-md-6 col-lg-4 mb-4">
-          <div class="card listing-preview">
-            <img class="card-img-top" src="assets/img/homes/home-1.jpg" alt="">
-            <div class="card-img-overlay">
-              <h2>
-                <span class="badge badge-secondary text-white">$490,000</span>
-              </h2>
-            </div>
-            <div class="card-body">
-              <div class="listing-heading text-center">
-                <h4 class="text-primary">45 Drivewood Circle</h4>
-                <p>
-                  <i class="fas fa-map-marker text-secondary"></i> Norwood MA, 02062</p>
-              </div>
-              <hr>
-              <div class="row py-2 text-secondary">
-                <div class="col-6">
-                  <i class="fas fa-th-large"></i> Sqft: 2500</div>
-                <div class="col-6">
-                  <i class="fas fa-car"></i> Garage: 2</div>
-              </div>
-              <div class="row py-2 text-secondary">
-                <div class="col-6">
-                  <i class="fas fa-bed"></i> Bedrooms: 3</div>
-                <div class="col-6">
-                  <i class="fas fa-bath"></i> Bathrooms: 2</div>
-              </div>
-              <hr>
-              <div class="row py-2 text-secondary">
-                <div class="col-6">
-                  <i class="fas fa-user"></i> Kyle Brown</div>
-              </div>
-              <div class="row text-secondary pb-2">
-                <div class="col-6">
-                  <i class="fas fa-clock"></i> 5 days ago</div>
-              </div>
-              <hr>
-              <a href="listing.html" class="btn btn-primary btn-block">More Info</a>
-            </div>
-          </div>
-        </div>
 
-        <!-- Listing 2 -->
-        <div class="col-md-6 col-lg-4 mb-4">
-          <div class="card listing-preview">
-            <img class="card-img-top" src="assets/img/homes/home-2.jpg" alt="">
-            <div class="card-img-overlay">
-              <h2>
-                <span class="badge badge-secondary text-white">$550,000</span>
-              </h2>
-            </div>
-            <div class="card-body">
-              <div class="listing-heading text-center">
-                <h4 class="text-primary">18 Jefferson Lane</h4>
-                <p>
-                  <i class="fas fa-map-marker text-secondary"></i> Woburn MA, 01801</p>
-              </div>
-              <hr>
-              <div class="row py-2 text-secondary">
-                <div class="col-6">
-                  <i class="fas fa-th-large"></i> Sqft: 3200</div>
-                <div class="col-6">
-                  <i class="fas fa-car"></i> Garage: 1</div>
-              </div>
-              <div class="row py-2 text-secondary">
-                <div class="col-6">
-                  <i class="fas fa-bed"></i> Bedrooms: 4</div>
-                <div class="col-6">
-                  <i class="fas fa-bath"></i> Bathrooms: 2.5</div>
-              </div>
-              <hr>
-              <div class="row py-2 text-secondary">
-                <div class="col-6">
-                  <i class="fas fa-user"></i> Mark Hudson</div>
-              </div>
-              <div class="row text-secondary pb-2">
-                <div class="col-6">
-                  <i class="fas fa-clock"></i> 5 days ago</div>
-              </div>
-              <hr>
-              <a href="listing.html" class="btn btn-primary btn-block">More Info</a>
-            </div>
-          </div>
-        </div>
 
-        <!-- Listing 3 -->
-        <div class="col-md-6 col-lg-4 mb-4">
-          <div class="card listing-preview">
-            <img class="card-img-top" src="assets/img/homes/home-3.jpg" alt="">
-            <div class="card-img-overlay">
-              <h2>
-                <span class="badge badge-secondary text-white">$580,000</span>
-              </h2>
-            </div>
-            <div class="card-body">
-              <div class="listing-heading text-center">
-                <h4 class="text-primary">187 Woodrow Street</h4>
-                <p>
-                  <i class="fas fa-map-marker text-secondary"></i> Salem MA, 01915</p>
-              </div>
-              <hr>
-              <div class="row py-2 text-secondary">
-                <div class="col-6">
-                  <i class="fas fa-th-large"></i> Sqft: 3107</div>
-                <div class="col-6">
-                  <i class="fas fa-car"></i> Garage: 0</div>
-              </div>
-              <div class="row py-2 text-secondary">
-                <div class="col-6">
-                  <i class="fas fa-bed"></i> Bedrooms: 4</div>
-                <div class="col-6">
-                  <i class="fas fa-bath"></i> Bathrooms: 3</div>
-              </div>
-              <hr>
-              <div class="row py-2 text-secondary">
-                <div class="col-6">
-                  <i class="fas fa-user"></i> Mark Hudson</div>
-              </div>
-              <div class="row text-secondary pb-2">
-                <div class="col-6">
-                  <i class="fas fa-clock"></i> 5 days ago</div>
-              </div>
-              <hr>
-              <a href="listing.html" class="btn btn-primary btn-block">More Info</a>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <section id="services" class="py-5 bg-secondary text-white">
-    <div class="container">
-      <div class="row text-center">
-        <div class="col-md-4">
-          <i class="fas fa-comment fa-4x mr-4"></i>
-          <hr>
-          <h3>Consulting Services</h3>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, debitis nam! Repudiandae, provident iste consequatur
-            hic dignissimos ratione ea quae.</p>
-        </div>
-        <div class="col-md-4">
-          <i class="fas fa-home fa-4x mr-4"></i>
-          <hr>
-          <h3>Propery Management</h3>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, debitis nam! Repudiandae, provident iste consequatur
-            hic dignissimos ratione ea quae.</p>
-        </div>
-        <div class="col-md-4">
-          <i class="fas fa-suitcase fa-4x mr-4"></i>
-          <hr>
-          <h3>Renting & Selling</h3>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, debitis nam! Repudiandae, provident iste consequatur
-            hic dignissimos ratione ea quae.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 {% endblock %}

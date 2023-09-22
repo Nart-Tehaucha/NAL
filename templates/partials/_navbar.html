@@ -1,10 +1,10 @@
 {% load static %}
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
     <div class="container">
     <a class="navbar-brand" href="{% url 'index' %}">
-        <img src="{% static 'img/logo.png' %}" class="logo" alt="">
+        <img src="{% static 'img/nal-logo.png' %}" class="logo" alt="">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup">
         <span class="navbar-toggler-icon"></span>
@@ -28,9 +28,6 @@
             {% endif %}
         >
             <a class="nav-link" href="{% url 'about' %}">About</a>
-        </li>
-        <li class="nav-item mr-3">
-            <a class="nav-link" href="listings.html">Featured Listings</a>
         </li>
         </ul>
 
