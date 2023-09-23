@@ -8,7 +8,6 @@ img {
   width: 80px; }
 
 .navbar {
-  opacity: 0.9;
   text-transform: uppercase; }
 
 .social a {
@@ -50,7 +49,7 @@ img {
     background: rgba(155, 233, 255, 0.8); }
 
 #showcase-inner {
-  background: url(../img/building.jpg) no-repeat top center fixed;
+  background: url(../img/school_bg.jpg) no-repeat top center fixed;
   background-size: cover;
   position: relative;
   overflow: hidden;
@@ -62,9 +61,24 @@ img {
     left: 0;
     min-height: 100%;
     width: 100%;
-    background: rgba(32, 134, 107, 0.8); }
+    background: rgba(155, 233, 255, 0.8); }
   #showcase-inner.showcase-search {
     min-height: 270px; }
+
+#ruler-inner {
+  background: url(../img/school_bg2.png) no-repeat top center fixed;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+  min-height: 200px; }
+  #ruler-inner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 100%;
+    width: 100%;
+    background: rgba(155, 233, 255, 0.3); }
 
 #work {
   padding: 6rem 0; }

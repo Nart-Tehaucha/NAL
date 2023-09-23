@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'lessons.apps.LessonsConfig',
     'students.apps.StudentsConfig',
     'teachers.apps.TeachersConfig',
+    'wordruler.apps.WordrulerConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
