@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<!-- Grid Start -->
+<section id="listings" class="py-5">
+    <div class="container">
+      <h3 class="text-center mb-3">Your Students</h3>
+      <div class="row">
+        {% if students %}
+
+            {% for student in students %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card listing-preview">
+                    <img class="card-img-top" src="{{student.photo.url}}" alt="" style="width: 100%; height: 15vw; object-fit: cover;">
+                    <div class="card-body">
+                        <div class="listing-heading text-center">
+                            <h3 class="text-primary">{{ students.name }}</h3>
+                            <p>
+                                <i class="fas fa-map-marker text-secondary"></i> {{ student.address }}
+                            </p>
+                        </div>
+                        <hr>
+                        <div class="row py-2 text-secondary">
+                            <div class="col-8">
+                                <i class="fas fa-user"></i> {{student.name}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row text-secondary pb-2">
+                            <a href="{% url 'wordruler_student' student.id %}" class="btn btn-primary btn-block">Prepare Ruler</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        {% else %}
+            <div class="col-md-12">
+                <p>No Students Available</p>
+            </div>
+
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  <!-- Grid End-->
+
+  {% endblock %}

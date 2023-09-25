@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- Banner Start -->
 <section id="ruler-inner" class="py-5 text-white">
     <div class="container">
       <div class="row text-center">
@@ -11,11 +12,13 @@
       </div>
     </div>
 </section>
+<!-- Banner End-->
 
+<!-- Ruler Start-->
 <section class="py-5">
-    <div class="container" style="width:200px">
-        <div class="col">
-            <div class="row">
+    <div class="container" >
+        <div class="row">
+            <div class="col-3 mr-5">
                 <table class="table table-sm table-bordered text-center">
                     <thead class="table-info">
                     <tr>
@@ -29,9 +32,9 @@
                                 <td class="align-middle"><p style="font-size:2.5em;"><b>{{ letter.letter }}</b></p></td>
                                 <td class="align-middle">
                                     {% if letter.letter_img %}
-                                    <img class="btn" id="{{ letter.id }}" data-toggle="modal" data-target="#{{ letter.letter }}" src="{{ letter.letter_img.url }}" alt="{{ letter.letter }}" style="height: 100%; width: 7vw; object-fit: cover;">
+                                    <img class="btn" id="{{ letter.letter }}" data-toggle="modal" data-target="#{{ letter.letter }}" src="{{ letter.letter_img.url }}" alt="{{ letter.letter }}" style="height: 100%; width: 7vw; object-fit: cover;">
                                     {% else %}
-                                    <button class="btn btn-info" id="{{ letter.id }}" data-toggle="modal" data-target="#{{ letter.letter }}"><b>+</b></button>
+                                    <button class="btn btn-info" id="{{ letter.letter }}" data-toggle="modal" data-target="#{{ letter.letter }}"><b>+</b></button>
                                     {% endif %}
                                 </td>   
                             </tr>
@@ -39,10 +42,21 @@
                     </tbody>
                 </table>
             </div>
+            <div class="col ml-5">
+                <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Preview:</h5>
+                      <hr>
+                      <p class="card-text">Manage your students</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
+<!-- Ruler End-->
 
+<!-- Modal Start-->
 {% for letter in letters %}
 <div class="modal fade" id="{{ letter.letter }}" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -79,5 +93,6 @@
     </div>
 </div>
 {% endfor %}
+<!-- Modal End-->
 
 {% endblock %}
