@@ -2,6 +2,8 @@ from django.db import models
 from students.models import Student
 from teachers.models import Teacher
 
+# from utils.model_abstracts import Model
+
 
 class Letter(models.Model):
     letter = models.CharField(max_length=1)

@@ -119,3 +119,21 @@ img {
 .expand-card:hover {
   transform: scale(1.1);
 }
+
+/* HIDE RADIO */
+input[type="radio"][id^="cb"]{
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* IMAGE STYLES */
+input[type="radio"][id^="cb"] + img {
+  cursor: pointer;
+}
+
+/* CHECKED STYLES */
+input[type="radio"][id^="cb"]:checked + img {
+  outline: 2px solid #f00;
+}
