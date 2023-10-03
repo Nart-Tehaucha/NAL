@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
+from rest_framework.authtoken.views import obtain_auth_token
 
 router = routers.DefaultRouter()
 
@@ -32,5 +33,6 @@ urlpatterns += [
     path('wordruler/', include('wordruler.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
+    path('api-token-auth/', obtain_auth_token), #gives us access to token auth
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
