@@ -17,7 +17,46 @@
 </section>
 <!-- Banner End-->
 
-<div id="vue-app"> [[ message ]] </div>
+<div id="vue-app">
+    <h2>[[ message ]]</h2>
+    <div v-for="post in info.data">
+        [[ post.attributes.letter_name ]]
+    </div>
+
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-3 mr-5 overflow-auto"  style="max-height: 50vw; overflow-y: scroll">
+                    <table class="table table-sm table-bordered text-center overflow-auto">
+                        <thead class="table-info">
+                        <tr>
+                            <th>Letter</th>
+                            <th>Image</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                                <tr v-for="a in 'abcdefg'">
+                                    <td class="align-middle"><p style="font-size:2.5em;"><b>[[a]]</b></p></td>
+                                    <td class="align-middle">
+                                        <button class="btn btn-info"><b>+</b></button>
+                                    </td>   
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col ml-5">
+                    <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title">Preview:</h5>
+                          <hr>
+                          <p class="card-text">Manage your students</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
 
 <!-- Ruler Start-->
 <section class="py-5">
@@ -71,26 +110,20 @@
                 <div class="modal-body text-center">
                     <form method="post" enctype="multipart/form-data">
                         <div class="row text-center mt-4">
-                            {% if not letter %}
-                                <div class="col mb-4">
-                                    <h5>Please upload an image</h5>
+                            <div class="containter px-4">
+                                <div class="row">
+                                    {% for l in all_letters %}
+                                        {% if l.letter == key %}
+                                            <div class="col-md-4">
+                                                <label>
+                                                    <input id="img-radio" type="radio" name="test" value="big">
+                                                    <img src="{{ l.letter_img.url }}" alt="Option 2">
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
-                            {% else %}
-                                <div class="containter px-4">
-                                    <div class="row">
-                                        {% for l in all_letters %}
-                                            {% if l.letter == letter.letter %}
-                                                <div class="col-md-4">
-                                                    <label>
-                                                        <input id="img-radio" type="radio" name="test" value="big">
-                                                        <img src="{{ l.letter_img.url }}" alt="Option 2">
-                                                    </label>
-                                                </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% endif %}
+                            </div>
                         </div>
                         <hr>
                         <div class="row text-center mb-4">
@@ -109,25 +142,26 @@
 <!-- Modal End-->
 
 <script>
-    const app = Vue.createApp({
+    new Vue({
         el: '#vue-app',
         delimiters: ['[[', ']]'],
-        data() {
+        data () {
           return {
-            returned_task: '',
-            new_task: '',
-            create_modify: '',
-            modify_id: -1,
-            modify_index: -1,
-            message: '',
+            info: null,
+            student_letters: null,
+            message: "hello",
           }
         },
-        created() {
-            this.message = 'Hello Vue';
-        },
-      });
-      
-      app.mount('#vue-app')
+        mounted () {
+            axios
+            .get('http://127.0.0.1:8000/api/letters/list/')
+            .then(response => (this.info = response.data));
+
+            axios
+            .post('http://127.0.0.1:8000/api/util/get_student_letters/')
+            .then(response => (this.info = response.data));
+        }
+      })
 </script>
 
 {% endblock %}

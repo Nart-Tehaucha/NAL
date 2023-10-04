@@ -1,9 +1,14 @@
 from json import JSONDecodeError
-from django.http import JsonResponse
-from .serializers import LetterSerializer, WordrulerSerializer
+from django.http import JsonResponse, HttpResponse
+from .serializers import LetterSerializer, WordrulerSerializer, StudentSerializer
 from rest_framework.parsers import JSONParser
-from rest_framework import views, status
+from rest_framework import views, status, authentication, permissions
 from rest_framework.response import Response
+from wordruler.models import Letter, Wordruler
+from students.models import Student
+from teachers.models import Teacher
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 # API VIEWS
@@ -67,3 +72,132 @@ class WordRulerAPIView(views.APIView):
             return JsonResponse({"result": "error","message": "Json decoding error"}, status= 400)
 
 
+class ListLetters(views.APIView):
+    """
+    View to list all letters in the system.
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request, format=None):
+        """
+        Return a list of all users.
+        """
+
+        letters = Letter.objects.all()
+        serializer = LetterSerializer(letters, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        data = JSONParser().parse(request)
+        serializer = LetterSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors, status=400)
+    
+class ListWordrulers(views.APIView):
+    """
+    View to list all Wordrulers in the system.
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request, format=None):
+        """
+        Return a list of all users.
+        """
+
+        wordrulers = Wordruler.objects.all()
+        serializer = WordrulerSerializer(data=wordrulers)
+        return Response(serializer)
+
+class ListStudents(views.APIView):
+    """
+    View to list all Student in the system.
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request, format=None):
+        """
+        Return a list of all Students.
+        """
+
+        students = Student.objects.all()
+        serializer = StudentSerializer(students, many=True)
+        return Response(serializer.data)
+
+@csrf_exempt
+def letter_detail(request, pk):
+    """
+    Retrieve, update or delete a letter.
+    """
+    try:
+        letter = Letter.objects.get(pk=pk)
+    except Letter.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = LetterSerializer(letter)
+        return JsonResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = LetterSerializer(letter, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        letter.delete()
+        return HttpResponse(status=204)
+    
+
+@csrf_exempt
+def create_letter_dict_by_student(request):
+    if request.method == 'GET':
+        try:
+            data = JSONParser().parse(request) # Get JSON data from frontend and parse it
+            if not 'pk' in data.keys():
+                return JsonResponse("Student ID was not provided.", status= 400) 
+            
+            curr_student = Student.objects.get(pk=data['pk'])
+            curr_teacher = Teacher.objects.first() # Hard coded, change later
+
+            wordruler_by_student, wr_created = Wordruler.objects.get_or_create(
+                student = curr_student,
+                teacher = curr_teacher
+            )
+
+            if wr_created:
+                print(f"Created new WR for: {curr_student.name}") # debug, delete later
+
+            letters = wordruler_by_student.letters.all()
+            
+            # Create dict that maps every existing letter to a key
+            letter_dict = {}
+
+            for l in letters:
+                serializer = LetterSerializer(l)
+                letter_dict.setdefault(l.letter, serializer.data)
+            
+            for c in 'abcdefghijklmnopqrstuvwxyz':
+                letter_dict.setdefault(c)
+
+            # Sort dict alphabetically
+            letter_dict = dict(sorted(letter_dict.items()))
+            
+            return JsonResponse(letter_dict)
+        except JSONDecodeError:
+            return JsonResponse({"result": "error","message": "Json decoding error"}, status= 400)
