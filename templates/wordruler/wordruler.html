@@ -26,6 +26,9 @@
         [[ post.attributes.letter_name ]]
     </div>
 
+    <hr>
+    <p v-text="student_letters.b.letter_img"></p>
+
     <section class="py-5">
         <div class="container">
             <div class="row">
@@ -79,7 +82,7 @@
                                         {% if l.letter == key %}
                                             <div class="col-md-4">
                                                 <label>
-                                                    <input id="img-radio" type="radio" name="test" value="big">
+                                                    <input id="img-radio" type="radio" name="modal_letter" value="{{ l.letter_img.url }}" v-model="message">
                                                     <img src="{{ l.letter_img.url }}" alt="Option 2">
                                                 </label>
                                             </div>
@@ -110,8 +113,34 @@
         delimiters: ['[[', ']]'],
         data () {
           return {
-            info: '',
-            student_letters: '',
+            info: {},
+            student_letters: { 
+                            "a": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "b": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "c": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "d": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "e": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "f": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "g": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "h": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "i": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "j": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "k": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "l": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "m": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "n": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "o": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "p": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "q": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "r": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "s": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "t": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "u": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "v": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "w": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "x": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "y": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "z": {id:null, letter:null, letter_name:null, letter_img:null} },
             message: "hello",
           }
         },
@@ -124,7 +153,7 @@
 
             axios
             .post('http://127.0.0.1:8000/api/util/get_student_letters/', student_pk)
-            .then(response => (this.student_letters = response.data));
+            .then(response => (Object.assign(this.student_letters, response.data)));
         }
       })
 </script>
