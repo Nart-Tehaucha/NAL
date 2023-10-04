@@ -18,7 +18,7 @@
 <!-- Banner End-->
 
 
-<!-- Ruler Start-->
+
 <div id="vue-app">
     <p id="{{ student.id }}" ref="student_info">test</p>
     <h2>[[ message ]]</h2>
@@ -29,6 +29,7 @@
     <hr>
     <p v-text="student_letters.b.letter_img"></p>
 
+    <!-- Ruler Start-->
     <section class="py-5">
         <div class="container">
             <div class="row">
@@ -63,49 +64,52 @@
             </div>
         </div>
     </section>
-</div>
-<!-- Ruler End-->
+    <!-- Ruler End-->
 
-
-<!-- Modal Start-->
-<section>
-    {% for key, letter in letter_dict.items %}
-    <div class="modal fade" id="{{ key }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body text-center">
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="row text-center mt-4">
-                            <div class="containter px-4">
-                                <div class="row">
-                                    {% for l in all_letters %}
-                                        {% if l.letter == key %}
-                                            <div class="col-md-4">
-                                                <label>
-                                                    <input id="img-radio" type="radio" name="modal_letter" value="{{ l.letter_img.url }}" v-model="message">
-                                                    <img src="{{ l.letter_img.url }}" alt="Option 2">
-                                                </label>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
+    <!-- Modal Start-->
+    <section>
+        {% for key, letter in letter_dict.items %}
+        <div class="modal fade" id="{{ key }}" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="row text-center mt-4">
+                                <div class="containter px-4">
+                                    <div class="row">
+                                        {% for l in all_letters %}
+                                            {% if l.letter == key %}
+                                                <div class="col-md-4">
+                                                    <label>
+                                                        <input id="img-radio" type="radio" name="modal_letter" value="{{ l.id }}" v-model="message">
+                                                        <img src="{{ l.letter_img.url }}" alt="Option 2">
+                                                    </label>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <hr>
-                        <div class="row text-center mb-4">
-                            <div class="col">
-                                <button class="btn btn-primary"><b>Upload New</b></button>
+                            <hr>
+                            <div class="row text-center mb-4">
+                                <div class="col">
+                                    <button class="btn btn-primary"><b>Upload New</b></button>
+                                </div>
                             </div>
-                        </div>
-                        <button type="submit" class="btn btn-success">Confirm</button>
-                    </form>
+                            <button type="submit" class="btn btn-success">Confirm</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    {% endfor %}
-</section>
-<!-- Modal End-->
+        {% endfor %}
+    </section>
+    <!-- Modal End-->
+</div>
+
+
+
+
 
 <script>
     new Vue({
@@ -143,6 +147,12 @@
                             "z": {id:null, letter:null, letter_name:null, letter_img:null} },
             message: "hello",
           }
+        },
+        methods:  {
+            replaceLetter: function (event) {
+                // TODO
+                console.log("ACTIVEATED");
+            }
         },
         mounted () {
             const student_pk = { pk: this.$refs.student_info.id};
