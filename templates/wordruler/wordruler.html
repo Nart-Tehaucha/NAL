@@ -17,7 +17,10 @@
 </section>
 <!-- Banner End-->
 
+
+<!-- Ruler Start-->
 <div id="vue-app">
+    <p id="{{ student.id }}" ref="student_info">test</p>
     <h2>[[ message ]]</h2>
     <div v-for="post in info.data">
         [[ post.attributes.letter_name ]]
@@ -35,10 +38,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                                <tr v-for="a in 'abcdefg'">
-                                    <td class="align-middle"><p style="font-size:2.5em;"><b>[[a]]</b></p></td>
+                                <tr v-for="(value,key) in student_letters ">
+                                    <td class="align-middle"><p style="font-size:2.5em;"><b>[[key]]</b></p></td>
                                     <td class="align-middle">
-                                        <button class="btn btn-info"><b>+</b></button>
+                                        <button v-if="value == null" class="btn btn-info" v-bind:id=" 'btn_' + key" data-toggle="modal" v-bind:data-target=" '#' + key"><b>+</b></button>
+                                        <img v-else class="btn" v-bind:id=" 'btn_' + key" data-toggle="modal" v-bind:data-target=" '#' + key" v-bind:src="value.letter_img" v-bind:alt="key" style="height: 100%; width: 7vw; object-fit: cover;">
                                     </td>   
                                 </tr>
                         </tbody>
@@ -57,47 +61,6 @@
         </div>
     </section>
 </div>
-
-<!-- Ruler Start-->
-<section class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-3 mr-5 overflow-auto"  style="max-height: 50vw; overflow-y: scroll">
-                <table class="table table-sm table-bordered text-center overflow-auto">
-                    <thead class="table-info">
-                    <tr>
-                        <th>Letter</th>
-                        <th>Image</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {% for key, letter in letter_dict.items %}
-                            <tr>
-                                <td class="align-middle"><p style="font-size:2.5em;"><b>{{ key }}</b></p></td>
-                                <td class="align-middle">
-                                    {% if letter %}
-                                    <img class="btn" id="btn_{{ key }}" data-toggle="modal" data-target="#{{ key }}" src="{{ letter.letter_img.url }}" alt="{{ key }}" style="height: 100%; width: 7vw; object-fit: cover;">
-                                    {% else %}
-                                    <button class="btn btn-info" id="btn_{{ key }}" data-toggle="modal" data-target="#{{ key }}"><b>+</b></button>
-                                    {% endif %}
-                                </td>   
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="col ml-5">
-                <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">Preview:</h5>
-                      <hr>
-                      <p class="card-text">Manage your students</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 <!-- Ruler End-->
 
 
@@ -147,19 +110,21 @@
         delimiters: ['[[', ']]'],
         data () {
           return {
-            info: null,
-            student_letters: null,
+            info: '',
+            student_letters: '',
             message: "hello",
           }
         },
         mounted () {
+            const student_pk = { pk: this.$refs.student_info.id};
+
             axios
             .get('http://127.0.0.1:8000/api/letters/list/')
             .then(response => (this.info = response.data));
 
             axios
-            .post('http://127.0.0.1:8000/api/util/get_student_letters/')
-            .then(response => (this.info = response.data));
+            .post('http://127.0.0.1:8000/api/util/get_student_letters/', student_pk)
+            .then(response => (this.student_letters = response.data));
         }
       })
 </script>

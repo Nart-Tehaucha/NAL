@@ -166,7 +166,7 @@ def letter_detail(request, pk):
 
 @csrf_exempt
 def create_letter_dict_by_student(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
             data = JSONParser().parse(request) # Get JSON data from frontend and parse it
             if not 'pk' in data.keys():
