@@ -20,15 +20,8 @@
 
 
 <div id="vue-app">
-    <p id="{{ student.id }}" ref="student_info">test</p>
-    <h2>[[ message ]]</h2>
-    <div v-for="post in info.data">
-        [[ post.attributes.letter_name ]]
-    </div>
-
-    <hr>
-    <p v-text="student_letters.b.letter_img"></p>
-
+    <p id="{{ student.id }}" ref="student_info" style="display: none;">test</p>
+    
     <!-- Ruler Start-->
     <section class="py-5">
         <div class="container">
@@ -55,9 +48,11 @@
                 <div class="col ml-5">
                     <div class="card">
                         <div class="card-body">
-                          <h5 class="card-title">Preview:</h5>
+                          <h5 class="card-title">Lesson Preview:</h5>
                           <hr>
-                          <p class="card-text">Manage your students</p>
+                          <b v-text="lesson_preview.lesson_title">Title</b>
+                         <br><br>
+                          <p v-text="lesson_preview.content" class="card-text">Content</p>
                         </div>
                     </div>
                 </div>
@@ -81,7 +76,7 @@
                                             {% if l.letter == key %}
                                                 <div class="col-md-4">
                                                     <label>
-                                                        <input id="img-radio" type="radio" name="modal_letter" value="{{ l.id }}" v-model="message">
+                                                        <input id="img-radio" type="radio" name="modal_letter" :value="{{ l.id }}" @input="replaceLetter($event.target.value, '{{ l.letter_img.url }}', '{{ l.letter }}')">
                                                         <img src="{{ l.letter_img.url }}" alt="Option 2">
                                                     </label>
                                                 </div>
@@ -96,7 +91,7 @@
                                     <button class="btn btn-primary"><b>Upload New</b></button>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-success">Confirm</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </form>
                     </div>
                 </div>
@@ -146,12 +141,25 @@
                             "y": {id:null, letter:null, letter_name:null, letter_img:null}, 
                             "z": {id:null, letter:null, letter_name:null, letter_img:null} },
             message: "hello",
+            aux: null,
+            lesson_preview: '',
           }
         },
         methods:  {
-            replaceLetter: function (event) {
+            replaceLetter: function (letter_id, img_url, letter) {
+
+                // Get letter through API
+                // Replace current letter with new one
+                axios
+                .get('http://127.0.0.1:8000/api/letters/' + letter_id +'/')
+                .then(response => (
+                        this.aux = response.data,
+                        this.$set(this.student_letters, letter, this.aux)
+                ));
+
                 // TODO
-                console.log("ACTIVEATED");
+                // Update DB with new student_letters through API.
+                
             }
         },
         mounted () {
@@ -164,6 +172,12 @@
             axios
             .post('http://127.0.0.1:8000/api/util/get_student_letters/', student_pk)
             .then(response => (Object.assign(this.student_letters, response.data)));
+
+            axios
+            .get('http://127.0.0.1:8000/api/lessons/by_student/' + student_pk.pk)
+            .then(response => (this.lesson_preview = response.data));
+
+            
         }
       })
 </script>

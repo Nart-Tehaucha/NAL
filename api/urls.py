@@ -19,8 +19,8 @@ urlpatterns = [
     path('teachers/<int:pk>/', views.ListStudents.as_view()),
     
     path('lessons/add/', views.ListStudents.as_view()),
-    path('lessons/list/', views.ListStudents.as_view()),
-    path('lessons/<int:pk>/', views.ListStudents.as_view()),
+    path('lessons/list/', views.ListLessons.as_view()),
+    path('lessons/by_student/<int:student_pk>/', views.lesson_get_by_student),
 
     path('util/get_student_letters/', views.create_letter_dict_by_student),
 ]

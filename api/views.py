@@ -1,12 +1,13 @@
 from json import JSONDecodeError
 from django.http import JsonResponse, HttpResponse
-from .serializers import LetterSerializer, WordrulerSerializer, StudentSerializer
+from .serializers import LetterSerializer, WordrulerSerializer, StudentSerializer, LessonSerializer
 from rest_framework.parsers import JSONParser
 from rest_framework import views, status, authentication, permissions
 from rest_framework.response import Response
 from wordruler.models import Letter, Wordruler
 from students.models import Student
 from teachers.models import Teacher
+from lessons.models import Lesson
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -180,12 +181,9 @@ def create_letter_dict_by_student(request):
                 teacher = curr_teacher
             )
 
-            if wr_created:
-                print(f"Created new WR for: {curr_student.name}") # debug, delete later
-
             letters = wordruler_by_student.letters.all()
             
-            # Create dict that maps every existing letter to a key
+            # Create dict that maps every existing letter to a key, null if student doesn't have letter
             letter_dict = {}
 
             for l in letters:
@@ -201,3 +199,40 @@ def create_letter_dict_by_student(request):
             return JsonResponse(letter_dict)
         except JSONDecodeError:
             return JsonResponse({"result": "error","message": "Json decoding error"}, status= 400)
+        
+
+class ListLessons(views.APIView):
+    """
+    View to list all Lessons in the system.
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request, format=None):
+        """
+        Return a list of all Students.
+        """
+
+        lesson = Lesson.objects.all()
+        serializer = LessonSerializer(lesson, many=True)
+        return Response(serializer.data)
+
+
+@csrf_exempt
+def lesson_get_by_student(request, student_pk):
+    """
+    Retrieve, update or delete a lesson.
+    """
+    try:
+        lesson = Lesson.objects.filter(student = student_pk).first()
+        if not lesson:
+            raise Lesson.DoesNotExist
+    except Lesson.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = LessonSerializer(lesson)
+        return JsonResponse(serializer.data)
