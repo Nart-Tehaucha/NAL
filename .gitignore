@@ -175,3 +175,4 @@ cython_debug/
 
 /static
 .vscode/settings.json
+/nal/static/node_modules

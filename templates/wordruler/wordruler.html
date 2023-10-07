@@ -1,16 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-
-
 <!-- Banner Start -->
 <section id="ruler-inner" class="py-5 text-white">
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
           <h1 class="display-4"><b>Letter Ruler</b></h1>
-          <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt, pariatur!</p>
         </div>
       </div>
     </div>
@@ -18,15 +14,14 @@
 <!-- Banner End-->
 
 
-
 <div id="vue-app">
     <p id="{{ student.id }}" ref="student_info" style="display: none;">test</p>
-    
+
     <!-- Ruler Start-->
     <section class="py-5">
         <div class="container">
             <div class="row">
-                <div class="col-3 mr-5 overflow-auto"  style="max-height: 50vw; overflow-y: scroll">
+                <div class="col-3 me-5 overflow-auto"  style="max-height: 40vw; overflow-y: scroll">
                     <table class="table table-sm table-bordered text-center overflow-auto">
                         <thead class="table-info">
                         <tr>
@@ -36,23 +31,23 @@
                         </thead>
                         <tbody>
                                 <tr v-for="(value,key) in student_letters ">
-                                    <td class="align-middle"><p style="font-size:2.5em;"><b>[[key]]</b></p></td>
+                                    <td class="align-middle"><p style="font-size:2.5em;"><b @mouseover="displayTooltips($event)" @mouseleave="hideTooltips($event)">[[key]]</b></p></td>
                                     <td class="align-middle">
                                         <button v-if="value == null" class="btn btn-info" v-bind:id=" 'btn_' + key" data-toggle="modal" v-bind:data-target=" '#' + key"><b>+</b></button>
-                                        <img v-else class="btn" v-bind:id=" 'btn_' + key" data-toggle="modal" v-bind:data-target=" '#' + key" v-bind:src="value.letter_img" v-bind:alt="key" style="height: 100%; width: 7vw; object-fit: cover;">
+                                        <img v-else class="btn" v-bind:id=" 'btn_' + key" data-bs-toggle="modal" v-bind:data-bs-target=" '#' + key" v-bind:src="value.letter_img" v-bind:alt="key" style="height: 100%; width: 7vw; object-fit: cover;">
                                     </td>   
                                 </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="col ml-5">
+                <div class="col ms-5">
                     <div class="card">
-                        <div class="card-body">
-                          <h5 class="card-title">Lesson Preview:</h5>
-                          <hr>
-                          <b v-text="lesson_preview.lesson_title">Title</b>
-                         <br><br>
-                          <p v-text="lesson_preview.content" class="card-text">Content</p>
+                        <div class="card-body mx-4">
+                            <h5 class="card-title">Lesson Preview:</h5>
+                            <hr>
+                            <b class="lesson_text">[[ lesson_preview.lesson_title ]]</b>
+                            <br><br><br>
+                            <div id="lesson_container" class="lesson_text"></div>
                         </div>
                     </div>
                 </div>
@@ -91,7 +86,7 @@
                                     <button class="btn btn-primary"><b>Upload New</b></button>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </form>
                     </div>
                 </div>
@@ -101,8 +96,6 @@
     </section>
     <!-- Modal End-->
 </div>
-
-
 
 
 
@@ -154,13 +147,67 @@
                 .get('http://127.0.0.1:8000/api/letters/' + letter_id +'/')
                 .then(response => (
                         this.aux = response.data,
-                        this.$set(this.student_letters, letter, this.aux)
+                        this.$set(this.student_letters, letter, this.aux),
+                        this.splitLesson(this.lesson_preview)
                 ));
 
                 // TODO
                 // Update DB with new student_letters through API.
                 
-            }
+            },
+
+            // Prepares lesson preview
+            splitLesson: function (lessonContent){
+                let lessonContainer = document.querySelector("#lesson_container");
+                lessonContainer.innerHTML = "";
+                for (const c of lessonContent.content){
+                    const c_lower = c.toLowerCase();
+
+                    if(!(c_lower >= 'a' && c_lower <= 'z')) {
+                        if(c == '.' || c == ',') {
+                            lessonContainer.innerHTML += c;
+                            lessonContainer.innerHTML += ("<br/><br/>");
+                        }
+                        if(c == ' ') {
+                            lessonContainer.innerHTML += " ";
+                        }
+                        continue;
+                    }
+                    else if (this.student_letters[c_lower] == null) {
+                        lessonContainer.innerHTML += c;
+                    }
+                    else {
+                        lessonContainer.innerHTML += ("<span class='lesson_letter lesson_letter_" + c_lower + "'>" 
+                        + c 
+                        + "<span class='text-center tooltipHidden'><img style='width:50px' src='" + this.student_letters[c_lower].letter_img + "'></span>"
+                        + "</span>");
+                    }
+
+                }
+
+            },
+
+            displayTooltips: function (event){
+                let letter = event.target.innerHTML;
+                let letters = document.getElementsByClassName('lesson_letter_' + letter);
+                console.log(letter);
+                for (const l of letters){
+                    l.children[0].classList.remove('tooltipHidden');
+                    l.children[0].classList.add('tooltipActive');
+                }
+
+            },
+
+            hideTooltips: function (event){
+                let letter = event.target.innerHTML;
+                let letters = document.getElementsByClassName('lesson_letter_' + letter);
+                console.log(letter);
+                for (const l of letters){
+                    l.children[0].classList.remove('tooltipActive');
+                    l.children[0].classList.add('tooltipHidden');
+                }
+
+            },
         },
         mounted () {
             const student_pk = { pk: this.$refs.student_info.id};
@@ -175,7 +222,10 @@
 
             axios
             .get('http://127.0.0.1:8000/api/lessons/by_student/' + student_pk.pk)
-            .then(response => (this.lesson_preview = response.data));
+            .then(response => (this.lesson_preview = response.data, 
+                            this.splitLesson(this.lesson_preview)
+                            ));
+
 
             
         }

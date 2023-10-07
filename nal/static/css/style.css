@@ -70,7 +70,7 @@ img {
   background-size: cover;
   position: relative;
   overflow: hidden;
-  min-height: 200px; }
+  min-height: 100px; }
   #ruler-inner::before {
     content: '';
     position: absolute;
@@ -136,4 +136,75 @@ input[type="radio"][id^="cb"] + img {
 /* CHECKED STYLES */
 input[type="radio"][id^="cb"]:checked + img {
   outline: 2px solid #f00;
+}
+
+.lesson_text {
+  font-size:2vw;
+}
+
+.lesson_letter {
+  cursor: help;
+  text-decoration:none;
+  position:relative;
+}
+
+.lesson_letter:hover {
+  background-color: yellow;
+}
+
+.tooltipHidden {
+  display:none;
+  -moz-border-radius:6px;
+  -webkit-border-radius:6px;
+  border-radius:6px;
+  color:black;
+  background:white; 
+}
+
+.tooltipActive {
+  cursor: help;
+  display:block;
+  position:absolute;
+  bottom:100%;
+  right:-25px;
+  z-index:1000;
+  width:auto;
+  max-width:320px;
+  min-height:50px;
+  border:1px solid black;
+  background-color: white;
+  margin-top:12px;
+  margin-left:32px;
+  overflow:hidden;
+  padding:8px;
+  -webkit-animation: fadeIn 0.3s;
+  animation: fadeIn 0.3s;
+}
+
+.lesson_letter:hover span {
+  cursor: help;
+  display:block;
+  position:absolute;
+  bottom:100%;
+  right:-25px;
+  z-index:1000;
+  width:auto;
+  max-width:320px;
+  min-height:50px;
+  border:1px solid black;
+  margin-top:12px;
+  margin-left:32px;
+  overflow:hidden;
+  padding:8px;
+  -webkit-animation: fadeIn 0.3s;
+  animation: fadeIn 0.3s;
+}
+
+@-webkit-keyframes fadeIn {
+  from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+    to { opacity: 1; }
 }
