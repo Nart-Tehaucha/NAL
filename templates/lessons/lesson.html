@@ -1,7 +1,204 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{lesson.lesson_title}}</h1>
-<p>{{lesson.content}}</p>
+
+
+<div id="vue-app">
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="container">
+            <table class="table table-sm table-bordered text-center overflow-auto">
+                <thead class="table-info">
+                <tr>
+                    <th>Letter</th>
+                    <th>Image</th>
+                </tr>
+                </thead>
+                <tbody>
+                        <tr v-for="(value,key) in student_letters ">
+                            <td class="align-middle"><p style="font-size:2.5em;"><b @mouseover="displayTooltips($event)" @mouseleave="hideTooltips($event)">[[key]]</b></p></td>
+                            <td class="align-middle">
+                                <button v-if="value == null" class="btn btn-info" v-bind:id=" 'btn_' + key" data-toggle="modal" v-bind:data-target=" '#' + key"><b>+</b></button>
+                                <img v-else class="btn" v-bind:id=" 'btn_' + key" data-bs-toggle="modal" v-bind:data-bs-target=" '#' + key" v-bind:src="value.letter_img" v-bind:alt="key" style="height: 100%; width: 7vw; object-fit: cover;">
+                            </td>   
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <p id="{{ lesson.student.id }}" ref="student_info" style="display: none;">test</p>
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col ms-5">
+                    <div class="card">
+                        <div class="card-body mx-4">
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <h5 class="card-title lesson_text">[[ lesson_preview.lesson_title ]]</h5>
+                                </div>
+                                <div class="col float-end text-end">
+                                    <button onclick="openNav()"><i class="fas fa-solid fa-ruler fa-3x my-2"></i></button>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col">
+                                    <div id="lesson_container" class="mt-4 lesson_text"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    /* Set the width of the side navigation to 250px */
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+    
+    /* Set the width of the side navigation to 0 */
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+
+<script>
+    new Vue({
+        el: '#vue-app',
+        delimiters: ['[[', ']]'],
+        data () {
+          return {
+            info: {},
+            student_letters: { 
+                            "a": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "b": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "c": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "d": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "e": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "f": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "g": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "h": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "i": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "j": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "k": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "l": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "m": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "n": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "o": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "p": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "q": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "r": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "s": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "t": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "u": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "v": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "w": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "x": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "y": {id:null, letter:null, letter_name:null, letter_img:null}, 
+                            "z": {id:null, letter:null, letter_name:null, letter_img:null} },
+            message: "hello",
+            aux: null,
+            lesson_preview: '',
+          }
+        },
+        methods:  {
+            replaceLetter: function (letter_id, img_url, letter) {
+
+                // Get letter through API
+                // Replace current letter with new one
+                axios
+                .get('http://127.0.0.1:8000/api/letters/' + letter_id +'/')
+                .then(response => (
+                        this.aux = response.data,
+                        this.$set(this.student_letters, letter, this.aux),
+                        this.splitLesson(this.lesson_preview)
+                ));
+
+                // TODO
+                // Update DB with new student_letters through API.
+                
+            },
+
+            // Prepares lesson preview
+            splitLesson: function (lessonContent){
+                let lessonContainer = document.querySelector("#lesson_container");
+                lessonContainer.innerHTML = "";
+                for (const c of lessonContent.content){
+                    const c_lower = c.toLowerCase();
+
+                    if(!(c_lower >= 'a' && c_lower <= 'z')) {
+                        if(c == '.' || c == ',') {
+                            lessonContainer.innerHTML += c;
+                            lessonContainer.innerHTML += ("<br/><br/>");
+                        }
+                        if(c == ' ') {
+                            lessonContainer.innerHTML += " ";
+                        }
+                        continue;
+                    }
+                    else if (this.student_letters[c_lower] == null) {
+                        lessonContainer.innerHTML += c;
+                    }
+                    else {
+                        lessonContainer.innerHTML += ("<span class='lesson_letter lesson_letter_" + c_lower + "'>" 
+                        + c 
+                        + "<span class='text-center tooltipHidden'><img style='width:50px' src='" + this.student_letters[c_lower].letter_img + "'></span>"
+                        + "</span>");
+                    }
+
+                }
+
+            },
+
+            displayTooltips: function (event){
+                let letter = event.target.innerHTML;
+                let letters = document.getElementsByClassName('lesson_letter_' + letter);
+                console.log(letter);
+                for (const l of letters){
+                    l.children[0].classList.remove('tooltipHidden');
+                    l.children[0].classList.add('tooltipActive');
+                }
+
+            },
+
+            hideTooltips: function (event){
+                let letter = event.target.innerHTML;
+                let letters = document.getElementsByClassName('lesson_letter_' + letter);
+                console.log(letter);
+                for (const l of letters){
+                    l.children[0].classList.remove('tooltipActive');
+                    l.children[0].classList.add('tooltipHidden');
+                }
+
+            },
+        },
+        mounted () {
+            const student_pk = { pk: this.$refs.student_info.id};
+
+            axios
+            .get('http://127.0.0.1:8000/api/letters/list/')
+            .then(response => (this.info = response.data));
+
+            axios
+            .post('http://127.0.0.1:8000/api/util/get_student_letters/', student_pk)
+            .then(response => (Object.assign(this.student_letters, response.data)));
+
+            axios
+            .get('http://127.0.0.1:8000/api/lessons/by_student/' + student_pk.pk)
+            .then(response => (this.lesson_preview = response.data, 
+                            this.splitLesson(this.lesson_preview)
+                            ));
+
+
+            
+        }
+      })
+</script>
 
 {% endblock %}
